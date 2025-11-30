@@ -1,0 +1,17 @@
+service: lambda-ts-manual
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+
+plugins:
+  - serverless-offline
+
+functions:
+  hello:
+    handler: dist/hello.hello
+    events:
+      - httpApi:
+          path: /
+          method: GET
