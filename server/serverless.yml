@@ -4,14 +4,35 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ap-south-1
+  environment:
+    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
+    GOOGLE_CLIENT_SECRET: ${env:GOOGLE_CLIENT_SECRET}
+    GOOGLE_REDIRECT_URI: ${env:GOOGLE_REDIRECT_URI}
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
 
 functions:
   hello:
-    handler: dist/hello.hello
+    handler: dist/handlers/hello.hello
     events:
       - httpApi:
           path: /
           method: GET
+  googleAuth:
+    handler: dist/handlers/login.handler
+    events:
+      - httpApi:
+          path: /api/auth/login/google
+          method: GET
+  authCallback:
+    handler: dist/handlers/callback.handler
+    events:
+      - httpApi:
+          path: /api/auth/callback/google
+          method: GET
+
+custom:
+  serverless-offline:
+    httpPort: 8888

@@ -1,21 +1,29 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/**/*.ts --bundle --platform=node --target=node18 --outdir=dist",
-    "dev": "npm run build && serverless offline"
+    "dev": "npm run build && serverless offline",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
     "esbuild": "^0.27.0",
     "serverless": "^4.25.0",
+    "serverless-dotenv-plugin": "^6.0.0",
     "serverless-offline": "^14.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "google-auth-library": "^10.5.0",
+    "pg": "^8.16.3"
   }
 }

@@ -18,3 +18,8 @@ out-logger.json
 .DS_Store
 
 dist/
+
+.env
+.env.*
+
+undefined
