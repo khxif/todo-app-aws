@@ -4,10 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/**/*.ts --bundle --platform=node --target=node18 --outdir=dist",
-    "dev": "npm run build && serverless offline",
-    "db:studio": "prisma studio",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push"
+    "dev": "npm run build && serverless offline"
   },
   "author": "",
   "license": "ISC",

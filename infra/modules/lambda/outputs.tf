@@ -1,7 +1,7 @@
-output "lambda_arn" {
-  value = aws_lambda_function.my_lambda.arn
+output "lambda_arns" {
+  value = { for k, v in aws_lambda_function.lambda : k => v.invoke_arn }
 }
 
-output "api_url" {
-  value = aws_apigatewayv2_api.http_api.api_endpoint
+output "lambda_names" {
+  value = { for k, v in aws_lambda_function.lambda : k => v.function_name }
 }

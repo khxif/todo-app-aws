@@ -1,11 +1,11 @@
-output "rds_endpoint" {
-  value = module.rds.rds_endpoint
+output "lambda_arn" {
+  value = module.lambda.lambda_arns
 }
 
-output "lambda_arn" {
-  value = module.lambda.lambda_arn
+output "lambda_names" {
+  value = module.lambda.lambda_names
 }
 
 output "api_url" {
-  value = module.lambda.api_url
+  value = module.api_gateway.api_url
 }
