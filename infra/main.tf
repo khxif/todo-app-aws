@@ -63,3 +63,9 @@ module "api_gateway" {
 
   depends_on = [module.lambda]
 }
+
+module "lambda_cloudfront" {
+  source                   = "./modules/cloudfront"
+  api_gateway_api_endpoint = module.api_gateway.api_url
+  depends_on               = [module.api_gateway]
+}
