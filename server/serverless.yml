@@ -5,9 +5,10 @@ provider:
   runtime: nodejs18.x
   region: ap-south-1
   environment:
-    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
-    GOOGLE_CLIENT_SECRET: ${env:GOOGLE_CLIENT_SECRET}
-    GOOGLE_REDIRECT_URI: ${env:GOOGLE_REDIRECT_URI}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_CLIENT_SECRET: ${env:COGNITO_CLIENT_SECRET}
+    COGNITO_REDIRECT_URI: ${env:COGNITO_REDIRECT_URI}
+    COGNITO_DOMAIN: ${env:COGNITO_DOMAIN}
 
 plugins:
   - serverless-offline
@@ -20,17 +21,19 @@ functions:
       - httpApi:
           path: /
           method: GET
-  googleAuth:
-    handler: dist/handlers/login.handler
-    events:
-      - httpApi:
-          path: /api/auth/login/google
-          method: GET
+
   authCallback:
     handler: dist/handlers/callback.handler
     events:
       - httpApi:
           path: /api/auth/callback/google
+          method: POST
+
+  authVerify:
+    handler: dist/handlers/auth-verify.handler
+    events:
+      - httpApi:
+          path: /api/auth/verify
           method: GET
 
 custom:

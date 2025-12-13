@@ -4,8 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Login() {
-  async function googleLogin() {
-    window.location.href = 'http://localhost:8888/api/auth/login/google';
+  async function loginWithGoogle() {
+    const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN!;
+    const redirect = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL!;
+    const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!;
+
+    const url =
+      `${domain}/oauth2/authorize?` +
+      new URLSearchParams({
+        identity_provider: 'Google',
+        response_type: 'code',
+        client_id: clientId,
+        redirect_uri: redirect,
+        scope: 'openid email profile',
+        prompt: 'select_account',
+      });
+
+    window.location.href = url;
   }
 
   return (
@@ -13,7 +28,7 @@ export default function Login() {
       <CardHeader>
         <CardTitle className="text-2xl">Login Page</CardTitle>
         <CardContent>
-          <Button onClick={googleLogin}>Login with Google.</Button>
+          <Button onClick={loginWithGoogle}>Login with Google.</Button>
         </CardContent>
       </CardHeader>
     </Card>

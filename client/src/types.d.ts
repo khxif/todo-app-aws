@@ -8,3 +8,9 @@ type TaskState = {
   inProgress: Task[];
   done: Task[];
 };
+
+interface User {
+  name: string;
+  email: string;
+  picture: string;
+}

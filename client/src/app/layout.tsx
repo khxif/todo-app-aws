@@ -1,7 +1,9 @@
+import { RootAppLayout } from '@/layouts/root-layout';
+import { AuthProtected } from '@/providers/auth-protected';
+import { QueryProvider } from '@/providers/query-provider';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { QueryProvider } from '@/providers/query-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <QueryProvider>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          {children}
+          <RootAppLayout>
+            <AuthProtected>{children}</AuthProtected>
+          </RootAppLayout>
         </body>
       </QueryProvider>
     </html>
