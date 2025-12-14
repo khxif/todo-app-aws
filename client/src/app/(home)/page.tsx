@@ -1,7 +1,9 @@
 'use client';
 
 import { Droppable } from '@/components/droppable';
+import { CreateTodoModal } from '@/components/modals/create-todo';
 import { SortableItem } from '@/components/sortable-item';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   closestCenter,
@@ -24,6 +26,8 @@ import React from 'react';
 export default function Home() {
   const [tasks, setTasks] = React.useState(items);
   const [activeId, setActiveId] = React.useState<number | null>(null);
+  const [isCreateTodoModalOpen, setIsCreateTodoModalOpen] = React.useState(false);
+
   const activeTodo =
     activeId &&
     Object.values(tasks)
@@ -42,40 +46,47 @@ export default function Home() {
   }
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-3 gap-5 p-10">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        {Object.entries(tasks).map(([status, items]) => (
-          <Card key={status} className="max-w-sm w-full">
-            <CardHeader>
-              <CardTitle>{statuses[status]}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Droppable id={status}>
-                <SortableContext
-                  id={status}
-                  items={items.map(item => item.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {items.map(item => (
-                    <SortableItem key={item.id} id={item.id} todo={item.todo} />
-                  ))}
-                </SortableContext>
-              </Droppable>
-            </CardContent>
-          </Card>
-        ))}
+    <main className="px-10 py-4 space-y-8">
+      <nav className="flex items-center justify-end">
+        <Button onClick={() => setIsCreateTodoModalOpen(true)}>Add Todo</Button>
+      </nav>
 
-        <DragOverlay>
-          {activeId ? (
-            <SortableItem id={activeId} todo={activeTodo ? activeTodo.todo : ''} />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {Object.entries(tasks).map(([status, items]) => (
+            <Card key={status} className="max-w-sm w-full">
+              <CardHeader>
+                <CardTitle>{statuses[status]}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Droppable id={status}>
+                  <SortableContext
+                    id={status}
+                    items={items.map(item => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {items.map(item => (
+                      <SortableItem key={item.id} id={item.id} todo={item.todo} />
+                    ))}
+                  </SortableContext>
+                </Droppable>
+              </CardContent>
+            </Card>
+          ))}
+
+          <DragOverlay>
+            {activeId ? (
+              <SortableItem id={activeId} todo={activeTodo ? activeTodo.todo : ''} />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      </section>
+      <CreateTodoModal isOpen={isCreateTodoModalOpen} setIsOpen={setIsCreateTodoModalOpen} />
     </main>
   );
 
