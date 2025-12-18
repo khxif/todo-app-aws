@@ -14,3 +14,12 @@ interface User {
   email: string;
   picture: string;
 }
+
+type TodoStatus = 'todo' | 'inProgress' | 'done';
+
+ interface Todo {
+  id: string;
+  todo: string;
+  status: TodoStatus;
+  position: number;
+}

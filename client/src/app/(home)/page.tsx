@@ -5,6 +5,8 @@ import { CreateTodoModal } from '@/components/modals/create-todo';
 import { SortableItem } from '@/components/sortable-item';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { updateTodoStatus } from '@/db';
+import { useTodos } from '@/hooks/use-todos';
 import {
   closestCenter,
   DndContext,
@@ -24,13 +26,13 @@ import {
 import React from 'react';
 
 export default function Home() {
-  const [tasks, setTasks] = React.useState(items);
-  const [activeId, setActiveId] = React.useState<number | null>(null);
+  const todos = useTodos();
+  const [activeId, setActiveId] = React.useState<string | null>(null);
   const [isCreateTodoModalOpen, setIsCreateTodoModalOpen] = React.useState(false);
 
   const activeTodo =
     activeId &&
-    Object.values(tasks)
+    Object.values(todos)
       .flat()
       .find(t => t.id === activeId);
 
@@ -42,7 +44,7 @@ export default function Home() {
   );
 
   function handleDragStart(event: DragStartEvent) {
-    setActiveId(event.active.id as number);
+    setActiveId(event.active.id as string);
   }
 
   return (
@@ -58,7 +60,7 @@ export default function Home() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          {Object.entries(tasks).map(([status, items]) => (
+          {Object.entries(todos).map(([status, items]) => (
             <Card key={status} className="max-w-sm w-full">
               <CardHeader>
                 <CardTitle>{statuses[status]}</CardTitle>
@@ -96,44 +98,24 @@ export default function Home() {
 
     const activeId = active.id;
 
-    // 1) Determine source column
-    const activeColumn = active.data.current?.sortable?.containerId as keyof TaskState;
-
-    // 2) Determine destination column
-    const overColumn = (over.data.current?.sortable?.containerId || // dropped on item
+    const sourceColumn = active.data.current?.sortable?.containerId as keyof TaskState;
+    const destinationColumn = (over.data.current?.sortable?.containerId || // dropped on item
       over.id) as keyof TaskState; // dropped on empty column
 
-    if (!activeColumn || !overColumn) return;
-    if (activeColumn === overColumn) return;
+    if (!sourceColumn || !destinationColumn) return;
+    if (sourceColumn === destinationColumn) return;
 
-    setTasks(prev => {
-      const copy = structuredClone(prev);
-      const item = copy[activeColumn].find(t => t.id === activeId)!;
-
-      // Remove from source
-      copy[activeColumn] = copy[activeColumn].filter(t => t.id !== activeId);
-
-      // Add to destination
-      copy[overColumn].push(item);
-
-      return copy;
-    });
+    updateTodoStatus(
+      activeId as string,
+      destinationColumn === 'todos' ? 'todo' : destinationColumn,
+    );
 
     setActiveId(null);
   }
 }
 
-const items = {
-  todos: [
-    { todo: 'Learn React', id: 1 },
-    { todo: 'Write Code', id: 4 },
-  ],
-  inProgress: [{ todo: 'Learn DnD Kit', id: 2 }],
-  done: [{ todo: 'Build a DnD App', id: 3 }],
-};
-
 const statuses: Record<string, string> = {
-  todos: 'To Dos',
+  todos: 'Todos',
   inProgress: 'In Progress',
   done: 'Done',
 };

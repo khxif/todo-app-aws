@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/**/*.ts --bundle --platform=node --target=node18 --outdir=dist",
-    "dev": "npm run build && serverless offline"
+    "dev": "npm run build && serverless offline",
+    "db:studio": "pnpm drizzle-kit studio"
   },
   "author": "",
   "license": "ISC",
