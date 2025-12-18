@@ -1,6 +1,9 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import fetch from 'node-fetch';
+import { db } from '../db';
+import { usersTable } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
 interface CognitoTokenResponse {
   id_token: string;
@@ -36,13 +39,23 @@ export const handler: APIGatewayProxyHandler = async event => {
     });
 
     const tokens = (await response.json()) as CognitoTokenResponse;
+    
     const decoded = jwt.decode(tokens.id_token) as JwtPayload;
+    if (!decoded || typeof decoded !== 'object') throw new Error('Invalid id_token');
 
     const user = {
       email: decoded.email,
       picture: decoded.picture,
       name: decoded.name,
     };
+
+    const [existingUser] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, user.email))
+      .limit(1);
+
+    if (!existingUser) await db.insert(usersTable).values(user);
 
     return {
       statusCode: 200,

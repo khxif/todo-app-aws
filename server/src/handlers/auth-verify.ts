@@ -12,18 +12,21 @@ export const handler: APIGatewayProxyHandler = async event => {
     const token = authHeader.replace('Bearer ', '');
     const decoded = await verifyCognitoToken(token);
 
+    const user = {
+      email: decoded.email,
+      picture: decoded.picture,
+      name: decoded.name,
+    };
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        authenticated: true,
-        user: decoded,
-      }),
+      body: JSON.stringify({ authenticated: true, user }),
     };
-  } catch (err: any) {
+  } catch (err) {
     return {
       statusCode: 401,
-      body: `Invalid token: ${err.message}`,
+      body: `Invalid token: ${(err as Error).message}`,
     };
   }
 };
