@@ -39,7 +39,7 @@ export const handler: APIGatewayProxyHandler = async event => {
     });
 
     const tokens = (await response.json()) as CognitoTokenResponse;
-    
+
     const decoded = jwt.decode(tokens.id_token) as JwtPayload;
     if (!decoded || typeof decoded !== 'object') throw new Error('Invalid id_token');
 
@@ -57,16 +57,9 @@ export const handler: APIGatewayProxyHandler = async event => {
 
     if (!existingUser) await db.insert(usersTable).values(user);
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: tokens.id_token, user }),
-    };
+    return { statusCode: 200, body: JSON.stringify({ token: tokens.id_token, user }) };
   } catch (error: any) {
     console.error('ERROR:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };

@@ -24,10 +24,7 @@ export const handler: APIGatewayProxyHandler = async event => {
       body: JSON.stringify({ authenticated: true, user }),
     };
   } catch (err) {
-    return {
-      statusCode: 401,
-      body: `Invalid token: ${(err as Error).message}`,
-    };
+    return { statusCode: 401, body: `Invalid token: ${(err as Error).message}` };
   }
 };
 

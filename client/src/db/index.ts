@@ -1,4 +1,5 @@
 import Dexie from 'dexie';
+import { generateKeyBetween } from 'fractional-indexing';
 
 export const db = new Dexie('todo-db');
 
@@ -7,7 +8,9 @@ db.version(1).stores({
 });
 
 export async function getTodos() {
-  const tasks = (await db.table<Todo>('tasks').toArray()).sort((a, b) => a.position - b.position);
+  const tasks = (await db.table<Todo>('tasks').toArray()).sort((a, b) =>
+    a.position.localeCompare(b.position),
+  );
 
   return {
     todos: tasks.filter(t => t.status === 'todo'),
@@ -17,11 +20,12 @@ export async function getTodos() {
 }
 
 export async function insertTask(todo: string) {
+  const lastTodo = await db.table<Todo>('tasks').where('status').equals('todo').last();
   const task: Todo = {
     id: crypto.randomUUID(),
     todo,
     status: 'todo',
-    position: Date.now(),
+    position: generateKeyBetween(lastTodo?.position ?? null, null),
   };
 
   await db.table<Todo>('tasks').add(task);
@@ -31,4 +35,8 @@ export async function insertTask(todo: string) {
 
 export async function updateTodoStatus(id: string, status: TodoStatus) {
   await db.table<Todo>('tasks').update(id, { status });
+}
+
+export async function updateTodoPosition(id: string, position: string) {
+  await db.table<Todo>('tasks').update(id, { position });
 }

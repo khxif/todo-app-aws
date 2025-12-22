@@ -15,5 +15,5 @@
 # }
 
 output "runner_ip" {
-  value = module.ci_cd.public_ip
+  value = module.runner.public_ip
 }

@@ -21,5 +21,5 @@ type TodoStatus = 'todo' | 'inProgress' | 'done';
   id: string;
   todo: string;
   status: TodoStatus;
-  position: number;
+  position: string;
 }
