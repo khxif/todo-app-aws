@@ -70,9 +70,14 @@
 #   depends_on               = [module.api_gateway]
 # }
 
-module "runner" {
-  source              = "./modules/runner"
-  github_repo         = var.github_repo
-  github_runner_token = var.github_runner_token
-  key_name            = var.key_name
+# module "runner" {
+#   source              = "./modules/runner"
+#   github_repo         = var.github_repo
+#   github_runner_token = var.github_runner_token
+#   key_name            = var.key_name
+# }
+
+module "secrets_manager" {
+  source   = "./modules/secrets-manager"
+  app_name = "todo-app"
 }

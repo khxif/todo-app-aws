@@ -14,6 +14,10 @@
 #   value = module.lambda_cloudfront.cloudfront_url
 # }
 
-output "runner_ip" {
-  value = module.runner.public_ip
+# output "runner_ip" {
+#   value = module.runner.public_ip
+# }
+
+output "secret_manager_arn" {
+  value = module.secrets_manager.secret_arn
 }
