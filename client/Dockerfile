@@ -22,6 +22,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
 EXPOSE 3000
 
 RUN addgroup -g 1001 nodejs
