@@ -105,12 +105,12 @@ export default function Home() {
 
     if (!sourceColumn || !destinationColumn) return;
 
-    if (sourceColumn === destinationColumn) {
-      const destinationItems = todos[destinationColumn];
+    // if (sourceColumn === destinationColumn) {
+    //   const destinationItems = todos[destinationColumn];
 
-      const newPosition = getNewPosition(destinationItems, over.id as string, activeId as string);
-      return updateTodoPosition(activeId as string, newPosition);
-    }
+    //   const newPosition = getNewPosition(destinationItems, over.id as string, activeId as string);
+    //   return updateTodoPosition(activeId as string, newPosition);
+    // }
 
     updateTodoStatus(
       activeId as string,
@@ -127,19 +127,19 @@ const statuses: Record<string, string> = {
   done: 'Done',
 };
 
-function getNewPosition(items: Todo[], activeId: string, overId: string) {
-  const withoutActive = items.filter(i => i.id !== activeId);
+// function getNewPosition(items: Todo[], activeId: string, overId: string) {
+//   const withoutActive = items.filter(i => i.id !== activeId);
 
-  // Dropped on container (empty space / bottom)
-  if (!items.some(i => i.id === overId)) {
-    const last = withoutActive[withoutActive.length - 1];
-    return generateKeyBetween(last?.position ?? null, null);
-  }
+//   // Dropped on container (empty space / bottom)
+//   if (!items.some(i => i.id === overId)) {
+//     const last = withoutActive[withoutActive.length - 1];
+//     return generateKeyBetween(last?.position ?? null, null);
+//   }
 
-  const overIndex = withoutActive.findIndex(i => i.id === overId);
+//   const overIndex = withoutActive.findIndex(i => i.id === overId);
 
-  const prev = withoutActive[overIndex - 1];
-  const next = withoutActive[overIndex];
+//   const prev = withoutActive[overIndex - 1];
+//   const next = withoutActive[overIndex];
 
-  return generateKeyBetween(prev?.position ?? null, next?.position ?? null);
-}
+//   return generateKeyBetween(prev?.position ?? null, next?.position ?? null);
+// }
