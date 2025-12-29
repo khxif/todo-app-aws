@@ -1,8 +1,3 @@
-# module "rds" {
-#   source = "./modules/rds"
-#   vpc_id = aws_vpc.vpc.id
-# }
-
 # module "runner" {
 #   source              = "./modules/runner"
 #   github_repo         = var.github_repo
@@ -14,6 +9,23 @@
 #   source   = "./modules/secrets-manager"
 #   app_name = "todo-app"
 # }
+
+module "vpc" {
+  source = "./modules/vpc"
+}
+
+resource "aws_security_group" "app_sg" {
+  name       = "app-sg"
+  vpc_id     = module.vpc.vpc_id
+  depends_on = [module.vpc]
+}
+
+module "rds" {
+  source     = "./modules/rds"
+  vpc_id     = module.vpc.vpc_id
+  app_sg_id  = aws_security_group.app_sg.id
+  depends_on = [module.vpc]
+}
 
 module "lambda" {
   source = "./modules/lambda"
