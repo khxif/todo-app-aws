@@ -1,14 +1,14 @@
-# output "lambda_arn" {
-#   value = module.lambda.lambda_arns
-# }
-
 output "api_url" {
   value = module.api_gateway.api_url
 }
 
-# output "lambda_cloudfront_url" {
-#   value = module.lambda_cloudfront.cloudfront_url
-# }
+output "cloudfront_url" {
+  value = module.cloudfront.cloudfront_url
+}
+
+output "frontend_url" {
+  value = "http://${module.frontend_ecs.alb_dns}"
+}
 
 # output "runner_ip" {
 #   value = module.runner.public_ip
@@ -17,7 +17,3 @@ output "api_url" {
 # output "secret_manager_arn" {
 #   value = module.secrets_manager.secret_arn
 # }
-
-output "frontend_url" {
-  value = "http://${module.frontend_ecs.alb_dns}"
-}

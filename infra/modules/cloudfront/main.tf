@@ -1,27 +1,32 @@
-resource "aws_cloudfront_origin_request_policy" "api_minimal" {
-  name    = "todo-origin-minimal"
-  comment = "Forward only essential items for caching"
+resource "aws_cloudfront_origin_request_policy" "ecs_minimal" {
+  name    = var.cloudfront_name
+  comment = "Minimal headers for ALB-backed ECS service"
 
   headers_config {
-    header_behavior = "none" # DO NOT FORWARD HEADERS - improves caching massively
+    header_behavior = "whitelist"
+    headers {
+      items = [
+        "Host",
+        "CloudFront-Viewer-Country"
+      ]
+    }
   }
 
   cookies_config {
-    cookie_behavior = "none"
+    cookie_behavior = "all" # change to "none" if purely public site
   }
 
   query_strings_config {
-    query_string_behavior = "all" # Needed for API GET endpoints
+    query_string_behavior = "all"
   }
 }
 
+resource "aws_cloudfront_cache_policy" "ecs_cache" {
+  name    = "${var.cloudfront_name}-cache"
+  comment = "Cache policy for ECS frontend"
 
-resource "aws_cloudfront_cache_policy" "api_cache_enabled" {
-  name    = "todo-cache-enabled"
-  comment = "Cache GET responses for API Gateway"
-
-  default_ttl = 60  # Cache for 1 minute
-  max_ttl     = 300 # Max cache 5 minutes
+  default_ttl = 300  # 5 minutes
+  max_ttl     = 3600 # 1 hour
   min_ttl     = 0
 
   parameters_in_cache_key_and_forwarded_to_origin {
@@ -29,7 +34,7 @@ resource "aws_cloudfront_cache_policy" "api_cache_enabled" {
     enable_accept_encoding_gzip   = true
 
     cookies_config {
-      cookie_behavior = "none"
+      cookie_behavior = "all"
     }
 
     headers_config {
@@ -37,37 +42,35 @@ resource "aws_cloudfront_cache_policy" "api_cache_enabled" {
     }
 
     query_strings_config {
-      query_string_behavior = "all" # Important for GET caching
+      query_string_behavior = "all"
     }
   }
 }
 
-
-
-resource "aws_cloudfront_distribution" "api_cf" {
+resource "aws_cloudfront_distribution" "ecs_cf" {
   enabled = true
 
   origin {
-    domain_name = replace(var.api_gateway_api_endpoint, "https://", "")
-    origin_id   = "api-gateway-origin"
+    domain_name = var.alb_domain
+    origin_id   = "ecs-alb-origin"
 
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "https-only"
+      origin_protocol_policy = "http-only" # ALB usually terminates TLS
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
   default_cache_behavior {
-    target_origin_id       = "api-gateway-origin"
+    target_origin_id       = "ecs-alb-origin"
     viewer_protocol_policy = "redirect-to-https"
 
-    allowed_methods = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
     cached_methods  = ["GET", "HEAD"]
 
-    cache_policy_id          = aws_cloudfront_cache_policy.api_cache_enabled.id
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.api_minimal.id
+    cache_policy_id          = aws_cloudfront_cache_policy.ecs_cache.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.ecs_minimal.id
     compress                 = true
   }
 

@@ -58,3 +58,10 @@ module "frontend_ecs" {
   source = "./modules/ecs"
   image  = var.frontend_image
 }
+
+module "cloudfront" {
+  source          = "./modules/cloudfront"
+  cloudfront_name = "todo-cloudfront"
+  alb_domain      = module.frontend_ecs.alb_dns
+  depends_on      = [module.frontend_ecs]
+}

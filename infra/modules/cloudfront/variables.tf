@@ -1,4 +1,7 @@
-variable "api_gateway_api_endpoint" {
+variable "cloudfront_name" {
   type        = string
-  description = "The API Gateway API endpoint URL"
+}
+
+variable "alb_domain" {
+  
 }
