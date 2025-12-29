@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "http_api" {
-  name          = "tf-test-api"
+  name          = var.api_gateway_name
   protocol_type = "HTTP"
 }
 
