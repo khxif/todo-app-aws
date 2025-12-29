@@ -18,6 +18,10 @@
 #   value = module.runner.public_ip
 # }
 
-output "secret_manager_arn" {
-  value = module.secrets_manager.secret_arn
+# output "secret_manager_arn" {
+#   value = module.secrets_manager.secret_arn
+# }
+
+output "frontend_url" {
+  value = "http://${module.frontend_ecs.alb_dns}"
 }

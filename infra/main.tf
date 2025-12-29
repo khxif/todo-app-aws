@@ -77,7 +77,12 @@
 #   key_name            = var.key_name
 # }
 
-module "secrets_manager" {
-  source   = "./modules/secrets-manager"
-  app_name = "todo-app"
+# module "secrets_manager" {
+#   source   = "./modules/secrets-manager"
+#   app_name = "todo-app"
+# }
+
+module "frontend_ecs" {
+  source = "./modules/ecs"
+  image  = var.frontend_image
 }

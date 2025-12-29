@@ -9,3 +9,7 @@ variable "github_runner_token" {
 variable "key_name" {
   type    = string
 }
+
+variable "frontend_image" {
+  type = string
+}
