@@ -8,27 +8,33 @@ on:
 jobs:
   install:
     runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Install Dependencies
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify runner
         run: |
           echo "Installing dependencies..."
           hostname
           whoami
 
-      - name: Install Terraform
+      - name: Install Terraform 
         run: |
           TERRAFORM_VERSION=1.6.6
+          INSTALL_DIR="$HOME/bin"
+
+          mkdir -p "$INSTALL_DIR"
 
           if ! command -v terraform &> /dev/null; then
             echo "Installing Terraform..."
             curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip
             unzip terraform.zip
-            sudo mv terraform /usr/local/bin/
+            mv terraform "$INSTALL_DIR/"
             rm terraform.zip
           else
             echo "Terraform already installed"
           fi
 
+          echo "$INSTALL_DIR" >> $GITHUB_PATH
           terraform --version
