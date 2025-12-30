@@ -1,10 +1,3 @@
-# module "runner" {
-#   source              = "./modules/runner"
-#   github_repo         = var.github_repo
-#   github_runner_token = var.github_runner_token
-#   key_name            = var.key_name
-# }
-
 # module "secrets_manager" {
 #   source   = "./modules/secrets-manager"
 #   app_name = "todo-app"
@@ -76,4 +69,11 @@ module "cloudfront" {
   cloudfront_name = "todo-cloudfront"
   alb_domain      = module.frontend_ecs.alb_dns
   depends_on      = [module.frontend_ecs]
+}
+
+module "runner" {
+  source              = "./modules/runner"
+  github_repo         = var.github_repo
+  github_runner_token = var.github_runner_token
+  key_name            = var.key_name
 }
