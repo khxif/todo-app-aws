@@ -26,7 +26,7 @@ jobs:
 
           mkdir -p "$INSTALL_DIR"
 
-          if ! command -v terraform &> /dev/null; then
+          if [ ! -f "$INSTALL_DIR/terraform" ]; then
             echo "Installing Terraform..."
             curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform.zip
             unzip terraform.zip
@@ -36,5 +36,10 @@ jobs:
             echo "Terraform already installed"
           fi
 
+          # Make terraform available in THIS step
+          export PATH="$INSTALL_DIR:$PATH"
+
+          # Persist PATH for next steps
           echo "$INSTALL_DIR" >> $GITHUB_PATH
+
           terraform --version
