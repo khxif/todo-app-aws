@@ -17,7 +17,6 @@ export async function getTodos() {
 }
 
 export async function insertTask(todo: string) {
-  const lastTodo = await db.table<Todo>('tasks').where('status').equals('todo').last();
   const task: Todo = {
     id: crypto.randomUUID(),
     todo,

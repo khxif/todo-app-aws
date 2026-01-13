@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { updateTodoPosition, updateTodoStatus } from '@/db';
 import { useTodos } from '@/hooks/use-todos';
 import {
-  closestCenter,
+  closestCorners,
   DndContext,
   DragEndEvent,
   DragOverlay,
@@ -19,11 +19,11 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { generateKeyBetween } from 'fractional-indexing';
 import React from 'react';
 
 export default function Home() {
@@ -57,7 +57,7 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={closestCorners}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
@@ -95,29 +95,40 @@ export default function Home() {
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (!over) return;
+    setActiveId(null);
 
-    const activeId = active.id;
+    if (!over) return;
+    if (active.id === over.id) return; // No change
+
+    const activeId = active.id as string;
+    const overId = over.id as string;
 
     const sourceColumn = active.data.current?.sortable?.containerId as keyof TaskState;
-    const destinationColumn = (over.data.current?.sortable?.containerId || // dropped on item
-      over.id) as keyof TaskState; // dropped on empty column
+    const destinationColumn = (over.data.current?.sortable?.containerId ||
+      over.id) as keyof TaskState;
 
     if (!sourceColumn || !destinationColumn) return;
 
-    // if (sourceColumn === destinationColumn) {
-    //   const destinationItems = todos[destinationColumn];
+    // Reordering within the same column
+    if (sourceColumn === destinationColumn) {
+      const items = todos[sourceColumn];
+      const oldIndex = items.findIndex(item => item.id === activeId);
+      const newIndex = items.findIndex(item => item.id === overId);
 
-    //   const newPosition = getNewPosition(destinationItems, over.id as string, activeId as string);
-    //   return updateTodoPosition(activeId as string, newPosition);
-    // }
+      if (oldIndex === newIndex) return;
 
-    updateTodoStatus(
-      activeId as string,
-      destinationColumn === 'todos' ? 'todo' : destinationColumn,
-    );
+      const reorderedItems = arrayMove(items, oldIndex, newIndex);
 
-    setActiveId(null);
+      reorderedItems.forEach((item, index) => {
+        const newPosition = (index + 1) * 1000;
+        if (item.position !== newPosition) updateTodoPosition(item.id, newPosition);
+      });
+
+      return;
+    }
+
+    // Moving to a different column
+    updateTodoStatus(activeId, destinationColumn === 'todos' ? 'todo' : destinationColumn);
   }
 }
 
@@ -126,20 +137,3 @@ const statuses: Record<string, string> = {
   inProgress: 'In Progress',
   done: 'Done',
 };
-
-// function getNewPosition(items: Todo[], activeId: string, overId: string) {
-//   const withoutActive = items.filter(i => i.id !== activeId);
-
-//   // Dropped on container (empty space / bottom)
-//   if (!items.some(i => i.id === overId)) {
-//     const last = withoutActive[withoutActive.length - 1];
-//     return generateKeyBetween(last?.position ?? null, null);
-//   }
-
-//   const overIndex = withoutActive.findIndex(i => i.id === overId);
-
-//   const prev = withoutActive[overIndex - 1];
-//   const next = withoutActive[overIndex];
-
-//   return generateKeyBetween(prev?.position ?? null, next?.position ?? null);
-// }
