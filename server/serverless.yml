@@ -36,6 +36,13 @@ functions:
           path: /api/auth/verify
           method: GET
 
+  syncTodos:
+    handler: dist/handlers/todos/sync.handler
+    events:
+      - httpApi:
+          path: /api/todos/sync
+          method: POST
+
 custom:
   serverless-offline:
     httpPort: 8888

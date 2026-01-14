@@ -1,4 +1,4 @@
-import { integer, pgEnum, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import { bigint, pgEnum, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const todoStatusEnum = pgEnum('todo_status', ['todo', 'inProgress', 'done']);
 
@@ -13,5 +13,5 @@ export const todoTable = pgTable('todo', {
   id: uuid().primaryKey().notNull(),
   todo: varchar({ length: 255 }).notNull(),
   status: todoStatusEnum('status').notNull(),
-  position: integer().notNull(),
+  position: bigint({ mode: 'number' }).notNull(),
 });
