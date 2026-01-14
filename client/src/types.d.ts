@@ -17,9 +17,10 @@ interface User {
 
 type TodoStatus = 'todo' | 'inProgress' | 'done';
 
- interface Todo {
+interface Todo {
   id: string;
   todo: string;
   status: TodoStatus;
   position: number;
+  syncStatus: 'synced' | 'new' | 'updated' | 'deleted';
 }

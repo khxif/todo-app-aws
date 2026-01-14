@@ -5,7 +5,7 @@ import { todoSchema, TodoSchemaType } from '@/zod-schemas/todo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CreateTodoForm } from '../forms/create-todo-form';
-import { insertTask } from '@/db';
+import { addTodos } from '@/db';
 
 interface CreateTodoModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export function CreateTodoModal({ isOpen, setIsOpen }: CreateTodoModalProps) {
   });
 
   async function onSubmit(values: TodoSchemaType) {
-    await insertTask(values.todo);
+    await addTodos(values.todo);
     setIsOpen(false);
     form.reset();
   }
