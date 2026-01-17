@@ -8,11 +8,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuthStore } from '@/stores/auth-store';
+import { signOut } from 'aws-amplify/auth';
 import { LogOutIcon } from 'lucide-react';
 
-export default function Header() {
+export function Header() {
   const user = useAuthStore(state => state.user);
-  const logout = useAuthStore(state => state.logout);
+
+  const logout = async () => {
+    await signOut({ global: true });
+  };
 
   return (
     <header className="px-5 py-4 flex items-center justify-end border-b border-primary">
