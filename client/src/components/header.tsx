@@ -7,13 +7,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuthStore } from '@/stores/auth-store';
 import { signOut } from 'aws-amplify/auth';
 import { LogOutIcon } from 'lucide-react';
 
 export function Header() {
-  const user = useAuthStore(state => state.user);
-
   const logout = async () => {
     await signOut({ global: true });
   };
@@ -23,8 +20,8 @@ export function Header() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="size-10">
-            <AvatarImage src={user?.picture} alt={user?.name} />
-            <AvatarFallback>{user?.name}</AvatarFallback>
+            {/* <AvatarImage src={user?.picture} alt={user?.name} />
+            <AvatarFallback>{user?.name}</AvatarFallback> */}
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="start">

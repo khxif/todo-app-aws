@@ -23,6 +23,6 @@ export const handler: PostConfirmationTriggerHandler = async event => {
     return event;
   } catch (error) {
     console.error('ERROR:', error);
-    return { statusCode: 500, body: JSON.stringify({ error: (error as Error).message }) };
+    return event;
   }
 };

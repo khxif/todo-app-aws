@@ -1,6 +1,6 @@
-import { apiClient } from './apiClient';
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
-export const verifyAuth = async () => {
-  const { data } = await apiClient.get('/auth/verify');
-  return data;
-};
+export async function getAuthenticatedUser() {
+  const user = await fetchUserAttributes();
+  return user;
+}
