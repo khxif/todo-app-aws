@@ -1,7 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import jwt, { JwtHeader, JwtPayload } from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
-import fetch from 'node-fetch';
 
 export const handler: APIGatewayProxyHandler = async event => {
   try {

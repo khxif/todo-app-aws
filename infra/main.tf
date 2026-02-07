@@ -3,22 +3,22 @@
 #   app_name = "todo-app"
 # }
 
-# module "vpc" {
-#   source = "./modules/vpc"
-# }
+module "vpc" {
+  source = "./modules/vpc"
+}
 
-# resource "aws_security_group" "app_sg" {
-#   name       = "app-sg"
-#   vpc_id     = module.vpc.vpc_id
-#   depends_on = [module.vpc]
-# }
+resource "aws_security_group" "app_sg" {
+  name       = "app-sg"
+  vpc_id     = module.vpc.vpc_id
+  depends_on = [module.vpc]
+}
 
-# module "rds" {
-#   source     = "./modules/rds"
-#   vpc_id     = module.vpc.vpc_id
-#   app_sg_id  = aws_security_group.app_sg.id
-#   depends_on = [module.vpc]
-# }
+module "rds" {
+  source     = "./modules/rds"
+  vpc_id     = module.vpc.vpc_id
+  app_sg_id  = aws_security_group.app_sg.id
+  depends_on = [module.vpc]
+}
 
 module "lambda" {
   source = "./modules/lambda"
@@ -59,21 +59,14 @@ module "api_gateway" {
   depends_on = [module.lambda]
 }
 
-# module "frontend_ecs" {
-#   source = "./modules/ecs"
-#   image  = var.frontend_image
-# }
+module "frontend_ecs" {
+  source = "./modules/ecs"
+  image  = var.frontend_image
+}
 
-# module "cloudfront" {
-#   source          = "./modules/cloudfront"
-#   cloudfront_name = "todo-cloudfront"
-#   alb_domain      = module.frontend_ecs.alb_dns
-#   depends_on      = [module.frontend_ecs]
-# }
-
-# module "runner" {
-#   source              = "./modules/runner"
-#   github_repo         = var.github_repo
-#   github_runner_token = var.github_runner_token
-#   key_name            = var.key_name
-# }
+module "cloudfront" {
+  source          = "./modules/cloudfront"
+  cloudfront_name = "todo-cloudfront"
+  alb_domain      = module.frontend_ecs.alb_dns
+  depends_on      = [module.frontend_ecs]
+}
