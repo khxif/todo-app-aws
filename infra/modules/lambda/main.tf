@@ -26,6 +26,23 @@ resource "aws_lambda_function" "lambda" {
   runtime       = "nodejs24.x"
 
   role             = aws_iam_role.lambda_exec.arn
-  filename         = "${path.root}/${each.value.filename}"
-  source_code_hash = filebase64sha256("${path.root}/${each.value.filename}")
+  filename         = "${path.root}/../server/lambda.zip"
+  source_code_hash = filebase64sha256("${path.root}/../server/lambda.zip")
+
+  depends_on = [data.archive_file.lambda_zip]
+}
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_dir  = "${path.root}/../server"
+  output_path = "${path.root}/../server/lambda.zip"
+
+  excludes = [
+    ".git",
+    ".gitignore",
+    ".serverless",
+    "serverless.yml",
+    "tsconfig.json",
+    "node_modules",
+  ]
 }

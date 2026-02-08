@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/**/*.ts --bundle --platform=node --target=node18 --outdir=dist",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "pnpm clean && esbuild src/**/*.ts --bundle --platform=node --target=node18 --outdir=dist",
     "dev": "npm run build && serverless offline",
     "db:studio": "pnpm drizzle-kit studio"
   },

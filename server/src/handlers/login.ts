@@ -1,9 +1,9 @@
-import { PostConfirmationTriggerHandler } from 'aws-lambda';
+import { PostAuthenticationTriggerHandler } from 'aws-lambda';
 import { eq } from 'drizzle-orm';
 import { db } from '../db';
 import { usersTable } from '../db/schema';
 
-export const handler: PostConfirmationTriggerHandler = async event => {
+export const handler: PostAuthenticationTriggerHandler = async event => {
   try {
     const attrs = event.request.userAttributes;
 
